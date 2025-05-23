@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conductor</title>
+    <link rel="stylesheet" href="/css/vistas.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="header">
+                <img src="/img/avatar.png" alt="Avatar" class="avatar" />
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <!-- Para conductores -->
+                    <h2 th:if="${#authorization.expression('hasRole(''CONDUCTOR'')')}"
+                        th:text="'Hola, ' + ${#authentication.principal.username} + '!'">
+                        Conductor
+                    </h2>
+                </div>
+            </div>
+
+            <button class="menu-btn" onclick="mostrarPanel('misViajes')">Mis Viajes</button>
+            <button class="menu-btn" onclick="mostrarPanel('historial')">Historial de Viajes</button>
+
+        </div>
+
+        <div class="logout">
+            <button class="menu-btn logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <div id="misViajes" class="panel">
+            <h2>Viajes a realizar</h2>
+        </div>
+        <div id="historial" class="panel hidden">
+            <h2>Historial</h2>
+        </div>
+    </div>
+</div>
+
+<script src="/js/panel.js"></script>
+<script src="/js/conductor.js"></script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrador</title>
+  <link rel="stylesheet" href="/css/vistas.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="hamburger" onclick="toggleSidebar()">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div>
+      <div class="header">
+        <img src="/img/avatar.png" alt="Avatar" class="avatar" />
+        <h2>Administrador</h2>
+      </div>
+
+      <button class="menu-btn" onclick="mostrarPanel('registrarConductor')">Registrar Conductor</button>
+      <button class="menu-btn" onclick="mostrarPanel('conductores')">Conductores</button>
+      <button class="menu-btn" onclick="mostrarPanel('registrarVehiculo')">Registrar Vehículo</button>
+      <button class="menu-btn" onclick="mostrarPanel('vehiculos')">Vehículos</button>
+      <button class="menu-btn" onclick="mostrarPanel('registrarLocaciones')">Registrar locaciones</button>
+      <button class="menu-btn" onclick="mostrarPanel('locaciones')">Locaciones</button>
+      <button class="menu-btn" onclick="mostrarPanel('solicitudes')">Solicitudes de viajes</button>
+      <button class="menu-btn" onclick="mostrarPanel('historial')">Historial viajes</button>
+      <button class="menu-btn" onclick="mostrarPanel('dashboard')">Dashboard</button>
+    </div>
+
+    <div class="logout">
+      <button class="menu-btn logout-btn" id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content">
+    <!-- FORMULARIO REGISTRAR CONDUCTOR -->
+    <div id="registrarConductor" class="panel">
+      <h2>Registrar Conductor</h2>
+      <form id="formRegistrarConductor" method="post" action="#">
+        <label for="nombreCompleto">Nombre Completo:</label>
+        <input type="text" id="nombreCompleto" name="nombreCompleto" required />
+
+        <label for="apellidosCompletos">Apellidos Completos:</label>
+        <input type="text" id="apellidosCompletos" name="apellidosCompletos" required />
+
+        <label for="nombreUsuario">Nombre de Usuario:</label>
+        <input type="text" id="nombreUsuario" name="nombreUsuario" required />
+
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="fechaNacimiento" name="fechaNacimiento" required />
+
+        <label for="numeroDocumento">Número de Documento:</label>
+        <input type="text" id="numeroDocumento" name="numeroDocumento" required />
+
+        <label for="tipoDocumento">Tipo de Documento:</label>
+        <select id="tipoDocumento" name="tipoDocumento" required>
+          <option value="">Seleccione un tipo</option>
+          <option value="CEDULA">Cédula</option>
+          <option value="PASAPORTE">Pasaporte</option>
+          <option value="CEDULA_EXTRANJERIA">Cédula de Extranjería</option>
+        </select>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" name="telefono" required />
+
+        <label for="sexo">Sexo:</label>
+        <select id="sexo" name="sexo" required>
+          <option value="">Seleccione un sexo</option>
+          <option value="MASCULINO">Masculino</option>
+          <option value="FEMENINO">Femenino</option>
+        </select>
+
+        <label for="licencia">Número de Licencia:</label>
+        <input type="text" id="licencia" name="licencia" required />
+
+        <label for="tipoLicencia">Tipo de Licencia:</label>
+        <select id="tipoLicencia" name="tipoLicencia" required>
+          <option value="">Seleccione tipo licencia</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
+          <option value="C3">C3</option>
+        </select>
+
+        <label for="automovil">Vehículo:</label>
+        <select id="automovil" name="automovil" required>
+          <option value="">Seleccione un vehículo</option>
+          <!-- Aquí se cargan vehículos disponibles vía JS -->
+        </select>
+
+        <button type="submit">Registrar</button>
+      </form>
+      <div id="mensaje-error-registro-conductor" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-registro-conductor" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- FORMULARIO EDITAR CONDUCTOR -->
+    <div id="editarConductor" class="panel hidden">
+      <h2>Editar Conductor</h2>
+      <form id="formEditarConductor" method="post" action="#">
+        <input type="hidden" id="editarConductorId" name="editarConductorId" />
+
+        <label for="editarNombreCompleto">Nombre Completo:</label>
+        <input type="text" id="editarNombreCompleto" name="editarNombreCompleto" required />
+
+        <label for="editarApellidosCompletos">Apellidos Completos:</label>
+        <input type="text" id="editarApellidosCompletos" name="editarApellidosCompletos" required />
+
+        <label for="editarNombreUsuario">Nombre de Usuario:</label>
+        <input type="text" id="editarNombreUsuario" name="editarNombreUsuario" required />
+
+        <label for="editarEmail">Email:</label>
+        <input type="email" id="editarEmail" name="editarEmail" required />
+
+        <label for="editarFechaNacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="editarFechaNacimiento" name="editarFechaNacimiento" required />
+
+        <label for="editarNumeroDocumento">Número de Documento:</label>
+        <input type="text" id="editarNumeroDocumento" name="editarNumeroDocumento" required />
+
+        <label for="editarTipoDocumento">Tipo de Documento:</label>
+        <select id="editarTipoDocumento" name="editarTipoDocumento" required>
+          <option value="">Seleccione un tipo</option>
+          <option value="CEDULA">Cédula</option>
+          <option value="PASAPORTE">Pasaporte</option>
+          <option value="CEDULA_EXTRANJERIA">Cédula de Extranjería</option>
+        </select>
+
+        <label for="editarTelefono">Teléfono:</label>
+        <input type="tel" id="editarTelefono" name="editarTelefono" required />
+
+        <label for="editarSexo">Sexo:</label>
+        <select id="editarSexo" name="editarSexo" required>
+          <option value="">Seleccione un sexo</option>
+          <option value="MASCULINO">Masculino</option>
+          <option value="FEMENINO">Femenino</option>
+        </select>
+
+        <label for="editarLicencia">Número de Licencia:</label>
+        <input type="text" id="editarLicencia" name="editarLicencia" required />
+
+        <label for="editarTipoLicencia">Tipo de Licencia:</label>
+        <select id="editarTipoLicencia" name="editarTipoLicencia" required>
+          <option value="">Seleccione tipo licencia</option>
+          <option value="C1">C1</option>
+          <option value="C2">C2</option>
+          <option value="C3">C3</option>
+        </select>
+
+        <label for="editarVehiculoAsignado">Vehículo:</label>
+        <select id="editarVehiculoAsignado" name="editarVehiculoAsignado">
+          <option value="">Seleccione un vehículo</option>
+          <!-- Aquí se cargan vehículos disponibles vía JS -->
+        </select>
+
+        <button type="submit">Guardar cambios</button>
+      </form>
+      <div id="mensaje-error-editar-conductor" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-editar-conductor" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- TABLA CONDUCTORES -->
+    <div id="conductores" class="panel hidden">
+      <h2>Conductores Registrados</h2>
+      <table class="tabla">
+        <thead>
+        <tr>
+          <th>Nombres Completos</th>
+          <th>Apellidos Completos</th>
+          <th>Documento</th>
+          <th>Teléfono</th>
+          <th>Email</th>
+          <th>Licencia</th>
+          <th>Tipo Licencia</th>
+          <th>Vehículo</th>
+          <th>Disponibilidad</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody id="conductores-tbody">
+
+        </tbody>
+      </table>
+    </div>
+    <!-- FORMULARIO REGISTRAR VEHICULO -->
+    <div id="registrarVehiculo" class="panel hidden">
+      <h2>Registrar Vehículo</h2>
+      <form id="formRegistrarVehiculo" method="post" action="#">
+        <label for="marca">Marca:</label>
+        <input type="text" id="marca" name="marca" required />
+
+        <label for="modelo">Modelo:</label>
+        <input type="text" maxlength="4" id="modelo" name="modelo" required />
+
+        <label for="placa">Placa:</label>
+        <input type="text" maxlength="6" id="placa" name="placa" required />
+
+        <label for="capacidad">Capacidad:</label>
+        <input type="number" id="capacidad" name="capacidad" required min="1" />
+
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" name="categoria" required>
+          <option value="">Seleccione una categoría</option>
+          <option value="SEDAN">Sedán</option>
+          <option value="SUV">SUV</option>
+          <option value="MINIVAN">Minivan</option>
+          <option value="MINIBUS">Minibus</option>
+          <option value="AUTOBUS">Autobus</option>
+          <option value="BUS">Bus</option>
+        </select>
+
+        <button type="submit">Registrar</button>
+      </form>
+      <div id="mensaje-error-registro-vehiculo" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-registro-vehiculo" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- FORMULARIO EDITAR VEHICULO -->
+    <div id="editarVehiculo" class="panel hidden">
+      <h2>Editar Vehículo</h2>
+      <form id="formEditarVehiculo" method="post" action="#">
+        <input type="hidden" id="editarVehiculoId" name="editarVehiculoId" />
+
+        <label for="editarMarca">Marca:</label>
+        <input type="text" id="editarMarca" name="editarMarca" required />
+
+        <label for="editarModelo">Modelo:</label>
+        <input type="text" maxlength="4" id="editarModelo" name="editarModelo" required />
+
+        <label for="editarPlaca">Placa:</label>
+        <input type="text" maxlength="6" id="editarPlaca" name="editarPlaca" required />
+
+        <label for="editarCapacidad">Capacidad:</label>
+        <input type="number" id="editarCapacidad" name="editarCapacidad" required min="1" />
+
+        <label for="editarCategoria">Categoría:</label>
+        <select id="editarCategoria" name="editarCategoria" required>
+          <option value="">Seleccione una categoría</option>
+          <option value="SEDAN">Sedán</option>
+          <option value="SUV">SUV</option>
+          <option value="MINIVAN">Minivan</option>
+          <option value="MINIBUS">Minibus</option>
+          <option value="AUTOBUS">Autobus</option>
+          <option value="BUS">Bus</option>
+        </select>
+
+        <button type="submit">Guardar cambios</button>
+      </form>
+      <div id="mensaje-error-editar-vehiculo" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-editar-vehiculo" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- TABLA DE VEHICULOS -->
+    <div id="vehiculos" class="panel hidden">
+      <h2>Vehículos Registrados</h2>
+      <table class="tabla">
+        <thead>
+        <tr>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Capacidad</th>
+          <th>Placa</th>
+          <th>Categoría</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody id="vehiculos-tbody">
+        </tbody>
+      </table>
+    </div>
+    <!-- FORMULARIO REGISTRAR LOCACIÓN -->
+    <div id="registrarLocaciones" class="panel hidden">
+      <h2>Registrar Locación</h2>
+      <form id="formRegistrarLocacion" method="post" action="#">
+        <label for="nombreLugar">Nombre del Lugar:</label>
+        <input type="text" id="nombreLugar" name="nombreLugar" required />
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion"></textarea>
+
+        <label for="latitud">Latitud:</label>
+        <input type="number" step="0.000000000000001" id="latitud" name="latitud" required />
+
+        <label for="longitud">Longitud:</label>
+        <input type="number" step="0.000000000000001" id="longitud" name="longitud" required />
+
+        <label for="precio">Precio Base (opcional):</label>
+        <input type="number" step="0.01" id="precio" name="precio" />
+
+        <button type="submit">Registrar</button>
+      </form>
+      <div id="mensaje-error-registro-locacion" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-registro-locacion" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- FORMULARIO EDITAR LOCACIÓN -->
+    <div id="editarLocacion" class="panel hidden">
+      <h2>Editar Locación</h2>
+      <form id="formEditarLocacion" method="post" action="#">
+        <input type="hidden" id="editarLocacionId" name="editarLocacionId" />
+
+        <label for="editarNombreLugar">Nombre del Lugar:</label>
+        <input type="text" id="editarNombreLugar" name="editarNombreLugar" required />
+
+        <label for="editarDescripcion">Descripción:</label>
+        <textarea id="editarDescripcion" name="editarDescripcion"></textarea>
+
+        <label for="editarLatitud">Latitud:</label>
+        <input type="number" step="0.000000000000001" id="editarLatitud" name="editarLatitud" required />
+
+        <label for="editarLongitud">Longitud:</label>
+        <input type="number" step="0.000000000000001" id="editarLongitud" name="editarLongitud" required />
+
+        <label for="editarPrecio">Precio Base (opcional):</label>
+        <input type="number" step="0.01" id="editarPrecio" name="editarPrecio" />
+
+        <button type="submit">Guardar cambios</button>
+      </form>
+      <div id="mensaje-error-editar-locacion" style="color: red; display: none;"></div>
+      <div id="mensaje-exito-editar-locacion" style="color: green; display: none;"></div>
+    </div>
+
+    <!-- TABLA DE LOCACIONES -->
+    <div id="locaciones" class="panel hidden">
+      <h2>Locaciones Registradas</h2>
+      <table class="tabla">
+        <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Coordenadas</th>
+          <th>Precio Base</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody id="locaciones-tbody"></tbody>
+      </table>
+    </div>
+    <div id="solicitudes" class="panel hidden">
+      <h2>Solicitudes de Viaje Pendientes</h2>
+
+      <!-- Lista de solicitudes -->
+      <div id="listaSolicitudes" class="cards-container"></div>
+
+      <!-- Panel de asignación (oculto inicialmente) -->
+      <div id="panelAsignacion" class="hidden">
+        <h3>Asignar Conductor</h3>
+        <div id="infoSolicitud"></div>
+
+        <h4>Conductores Disponibles</h4>
+        <div id="listaConductores" class="cards-container"></div>
+
+        <button onclick="cancelarAsignacion()">Cancelar</button>
+      </div>
+    </div>
+    <div id="historial" class="panel hidden">
+      <h2>Historial de viajes</h2>
+    </div>
+    <div id="dashboard" class="panel hidden">
+      <iframe id="powerbi-frame" th:src="${powerBiUrl}" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<script src="/js/panel.js"></script>
+<script src="/js/crud.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

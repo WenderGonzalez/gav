@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cliente</title>
+    <link rel="stylesheet" href="/css/vistas.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="header">
+                <img src="/img/avatar.png" alt="Avatar" class="avatar" />
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <!-- Para clientes -->
+                    <h2 th:if="${#authorization.expression('hasRole(''CLIENTE'')')}"
+                        th:text="'Hola, ' + ${#authentication.principal.username} + '!'">
+                        Cliente
+                    </h2>
+                </div>
+            </div>
+
+            <button class="menu-btn" onclick="mostrarPanel('solicitar')">Solicitar Viaje</button>
+            <button class="menu-btn" onclick="mostrarPanel('misViajes')">Mi Viaje</button>
+            <button class="menu-btn" onclick="mostrarPanel('miHistorial')">Historial de Viajes</button>
+
+        </div>
+
+        <div class="logout">
+            <button class="menu-btn logout-btn" id="logoutBtn">Cerrar sesión</button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+        <div id="solicitar" class="panel">
+            <h2>Viajes disponibles</h2>
+            <div id="cardsDestinos" class="cards-container">
+                <!-- Las tarjetas se generan dinámicamente con JS -->
+            </div>
+        </div>
+        <div id="misViajes" class="panel hidden">
+            <h2>Mi viaje</h2>
+        </div>
+        <div id="miHistorial" class="panel hidden">
+            <h2>Historial</h2>
+        </div>
+    </div>
+</div>
+
+<script src="/js/panel.js"></script>
+<script src="/js/cliente.js"></script>
+</body>
+</html>
