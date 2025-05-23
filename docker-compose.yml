@@ -7,15 +7,18 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mongo
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+      redis:
+        condition: service_started
     environment:
       # MongoDB
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/gestiondeviajes
       
-      # MySQL
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gav?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC
+      # MySQL (URL actualizada con parámetros adicionales)
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gav?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 12345
       
@@ -33,6 +36,11 @@ services:
       - "27018:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - gav-network
 
@@ -44,10 +52,17 @@ services:
       MYSQL_ROOT_PASSWORD: 12345
       MYSQL_DATABASE: gav
     ports:
-      - "3307:3306"
+      - "3306:3306"  # Cambiado a puerto estándar
     volumes:
       - mysql-data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --bind-address=0.0.0.0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p12345"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - gav-network
 
@@ -59,6 +74,11 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - gav-network
 
