@@ -7,14 +7,19 @@ RUN apk add --no-cache \
     openssh-client \
     maven
 
-# 2. Configurar permisos ANTES de copiar
+# 2. Configurar directorio de trabajo
 WORKDIR /app
-COPY mvnw .mvn/wrapper/maven-wrapper.properties ./
-RUN chmod +x mvnw  # ESTE ES EL CAMBIO CLAVE
 
-# 3. Copiar el resto y construir
+# 3. Copiar PRIMERO los archivos esenciales del wrapper
+COPY mvnw ./
+COPY .mvn/wrapper/maven-wrapper.properties .mvn/wrapper/
+RUN chmod +x mvnw  # Dar permisos de ejecución
+
+# 4. Copiar el resto de archivos
 COPY pom.xml .
 COPY src ./src
+
+# 5. Ejecutar Maven
 RUN ./mvnw dependency:go-offline -B
 RUN ./mvnw clean package -DskipTests
 
