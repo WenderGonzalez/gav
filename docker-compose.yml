@@ -2,9 +2,7 @@ version: '3.9'
 
 services:
   gav-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: gav-app
     ports:
       - "8080:8080"
@@ -13,10 +11,15 @@ services:
       - mysql
       - redis
     environment:
+      # MongoDB
       SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/gestiondeviajes
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gav
+      
+      # MySQL
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gav?useSSL=false&allowPublicKeyRetrieval=true&useTimezone=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 12345
+      
+      # Redis
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
     networks:
@@ -44,6 +47,7 @@ services:
       - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
     networks:
       - gav-network
 
