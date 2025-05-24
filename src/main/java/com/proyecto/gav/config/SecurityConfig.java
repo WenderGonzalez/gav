@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
-@EnableRedisHttpSession(
+@EnableMongoHttpSession(
         maxInactiveIntervalInSeconds = 1800
 )
 public class SecurityConfig {
